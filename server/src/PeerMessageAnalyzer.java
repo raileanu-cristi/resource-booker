@@ -2,8 +2,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This program demonstrates how to implement PeerMessageAnalyzer
@@ -11,28 +9,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author criss.tmd@gmail.com
  */
 public class PeerMessageAnalyzer extends Thread {
-    private final Queue<DatagramPacket> msgQueue;
     private final ResourceRepository resourceRepository;
-    private boolean isRunning;
     private final ISendPacketToPeer peerSender;
 
-    public PeerMessageAnalyzer(ISendPacketToPeer peerSender) {
-        isRunning = true;
+    final DatagramPacket datagramPacket;
+
+    public PeerMessageAnalyzer(ISendPacketToPeer peerSender, final DatagramPacket datagramPacket) {
         this.peerSender = peerSender;
-        this.msgQueue = new ConcurrentLinkedQueue<>();
         this.resourceRepository = new ResourceRepository();
+        this.datagramPacket = datagramPacket;
     }
 
     public void run() {
-        while (isRunning) {
-            if (!msgQueue.isEmpty()) {
-                processMessage(msgQueue.poll());
-            }
-        }
-    }
-
-    public void addMessage(final DatagramPacket message) {
-        msgQueue.add(message);
+        processMessage(datagramPacket);
     }
 
     private void processMessage(final DatagramPacket packet) {
