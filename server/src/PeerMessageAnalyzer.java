@@ -9,15 +9,16 @@ import java.util.Optional;
  * @author criss.tmd@gmail.com
  */
 public class PeerMessageAnalyzer extends Thread {
-    private final ResourceRepository resourceRepository;
     private final ISendPacketToPeer peerSender;
+
+    private final ResourceRepository resourceRepository;
 
     final DatagramPacket datagramPacket;
 
-    public PeerMessageAnalyzer(ISendPacketToPeer peerSender, final DatagramPacket datagramPacket) {
+    public PeerMessageAnalyzer(ISendPacketToPeer peerSender, final ResourceRepository resourceRepository, final DatagramPacket datagramPacket) {
         this.peerSender = peerSender;
-        this.resourceRepository = new ResourceRepository();
         this.datagramPacket = datagramPacket;
+        this.resourceRepository = resourceRepository;
     }
 
     public void run() {
